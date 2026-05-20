@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PhishProtect AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Georgia, serif;}
+body{background:#0c0c0c;color:#f5f5f5;}
+
+header{padding:30px 100px;}
+.logo{font-size:26px;color:#d4af37;}
+
+.hero{padding:120px;text-align:center;}
+.hero h1{font-size:55px;}
+.hero span{color:#d4af37;}
+.hero p{color:#aaa;margin:20px 0 60px;}
+
+.scanner-card{
+  max-width:900px;margin:auto;padding:60px;
+  background:#111;border-radius:25px;
+}
+
+.input-group{display:flex;border-radius:10px;overflow:hidden;}
+input{
+  flex:1;padding:20px;background:#1a1a1a;
+  border:none;color:white;
+}
+button{
+  padding:20px 50px;background:#d4af37;
+  border:none;font-weight:bold;cursor:pointer;
+}
+
+.result{
+  margin-top:40px;padding:40px;border-radius:20px;
+}
+
+.safe{border-left:6px solid #4ade80;}
+.danger{border-left:6px solid #ef4444;}
+
+.badge{
+  padding:8px 20px;border-radius:20px;
+  margin-bottom:15px;display:inline-block;
+}
+.safe-badge{background:#4ade80;color:black;}
+.danger-badge{background:#ef4444;}
+
+.progress{
+  height:15px;background:#222;border-radius:10px;margin-top:15px;
+}
+.bar{height:100%;border-radius:10px;}
+.safe .bar{background:#4ade80;}
+.danger .bar{background:#ef4444;}
+
+/* WHY BOX (SEPARATE 🔥) */
+.why-box{
+  max-width:900px;margin:30px auto;
+  padding:25px;background:#111;border-radius:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">PhishProtect AI 🛡️</div>
+</header>
+
+<section class="hero">
+<h1>AI-Driven <span>Phishing Threat Intelligence</span></h1>
+<p>Detect malicious URLs instantly with AI</p>
+
+<div class="scanner-card">
+<form action="/predict" method="POST">
+  <div class="input-group">
+    <input type="text" name="url" placeholder="Enter URL..." required>
+    <button>Scan URL</button>
+  </div>
+</form>
+
+{% if prediction_text %}
+
+<!-- 🔴 PHISHING -->
+{% if prediction_text == "phishing" %}
+<div class="result danger">
+  <div class="badge danger-badge">HIGH THREAT</div>
+  <h2>⚠️ Suspicious Phishing URL</h2>
+  <p>Confidence: {{ confidence }}%</p>
+  <div class="progress">
+    <div class="bar" style="width: {{ confidence }}%"></div>
+  </div>
+</div>
+
+<!-- WHY PHISHING (SEPARATE) -->
+{% if reasons %}
+<div class="why-box" style="border:1px solid red;">
+  <h3 style="color:red;">⚠️ Why this URL is Suspicious?</h3>
+  <ul>
+    {% for r in reasons %}
+    <li>{{ r }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<!-- 🟢 SAFE -->
+{% else %}
+<div class="result safe">
+  <div class="badge safe-badge">SAFE</div>
+  <h2>✅ URL is Safe</h2>
+  <p>Confidence: {{ confidence }}%</p>
+  <div class="progress">
+    <div class="bar" style="width: {{ confidence }}%"></div>
+  </div>
+</div>
+
+<!-- WHY SAFE (SEPARATE) -->
+{% if reasons %}
+<div class="why-box" style="border:1px solid #4ade80;">
+  <h3 style="color:#4ade80;">✅ Why this URL is Safe?</h3>
+  <ul>
+    {% for r in reasons %}
+    <li>{{ r }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% endif %}
+{% endif %}
+
+</div>
+</section>
+
+</body>
+</html>
